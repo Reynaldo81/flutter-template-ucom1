@@ -202,7 +202,7 @@ class HomeView extends StatelessWidget {
                       },
                       child: circleCard(
                         image: DefaultImages.topup,
-                        title: "Top-up",
+                        title: "Pagar",
                       ),
                     ),
                     InkWell(
@@ -228,7 +228,7 @@ class HomeView extends StatelessWidget {
                       },
                       child: circleCard(
                         image: DefaultImages.transfer,
-                        title: "Transfer",
+                        title: "Reservar",
                       ),
                     )
                   ],
@@ -259,7 +259,7 @@ class HomeView extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Transactions",
+                                "Pagos Previos",
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleLarge!

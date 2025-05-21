@@ -102,7 +102,7 @@ class _TransferScreenState extends State<TransferScreen> {
                                 ? Column(
                                     children: [
                                       Text(
-                                        "Where do you want to\ntransfer?",
+                                        "Reservar un Lugar",
                                         style: Theme.of(context)
                                             .textTheme
                                             .titleLarge!
@@ -152,7 +152,7 @@ class _TransferScreenState extends State<TransferScreen> {
                                                   )),
                                               const SizedBox(width: 14),
                                               Text(
-                                                "Select Bank",
+                                                "Seleccionar Banco",
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .titleLarge!
@@ -187,7 +187,7 @@ class _TransferScreenState extends State<TransferScreen> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            "Transfer to",
+                                            "Transferir a",
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .titleLarge!
@@ -197,7 +197,7 @@ class _TransferScreenState extends State<TransferScreen> {
                                                 ),
                                           ),
                                           Text(
-                                            "See all",
+                                            "Ver Todo",
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .titleLarge!
