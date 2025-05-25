@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:finpay/controller/reserva_controller.dart';
+import 'package:finpay/controller/Alumno_controller.dart';
 import 'package:finpay/model/sitema_reservas.dart';
 import 'package:finpay/utils/utiles.dart';
 
 class ReservaScreen extends StatelessWidget {
-  final controller = Get.put(ReservaController());
+  final controller = Get.put(AlumnoController());
 
   ReservaScreen({super.key});
 
