@@ -1,20 +1,26 @@
 import 'package:finpay/model/sitema_reservas.dart';
 import 'package:get/get.dart';
 import 'package:finpay/api/local.db.service.dart';
+import 'package:flutter/material.dart';
 
 class AlumnoController extends GetxController {
+  final db = LocalDBService();
+
+  // Observables
   RxList<Piso> pisos = <Piso>[].obs;
   Rx<Piso?> pisoSeleccionado = Rx<Piso?>(null);
+
   RxList<Lugar> lugaresDisponibles = <Lugar>[].obs;
   Rx<Lugar?> lugarSeleccionado = Rx<Lugar?>(null);
+
   Rx<DateTime?> horarioInicio = Rx<DateTime?>(null);
   Rx<DateTime?> horarioSalida = Rx<DateTime?>(null);
   RxInt duracionSeleccionada = 0.obs;
-  final db = LocalDBService();
+
   RxList<Auto> autosCliente = <Auto>[].obs;
   Rx<Auto?> autoSeleccionado = Rx<Auto?>(null);
 
-  String codigoClienteActual = 'cliente_1'; // ← este puede venir de login
+  String codigoClienteActual = 'cliente_1'; // ← puede venir del login
 
   @override
   void onInit() {
@@ -31,7 +37,6 @@ class AlumnoController extends GetxController {
 
     final reservas = rawReservas.map((e) => Reserva.fromJson(e)).toList();
     final lugaresReservados = reservas.map((r) => r.codigoReserva).toSet();
-
     final todosLugares = rawLugares.map((e) => Lugar.fromJson(e)).toList();
 
     pisos.value = rawPisos.map((pJson) {
@@ -55,7 +60,6 @@ class AlumnoController extends GetxController {
     pisoSeleccionado.value = piso;
     lugarSeleccionado.value = null;
 
-    // Filtrar lugares de ese piso
     final lugaresFiltrados = lugaresDisponibles
         .where((lugar) => lugar.codigoPiso == piso.codigo)
         .toList();
@@ -63,19 +67,35 @@ class AlumnoController extends GetxController {
     lugaresDisponibles.value = lugaresFiltrados;
   }
 
-  Future<bool> confirmarReserva() async {
+  Future<void> confirmarReserva() async {
     if (pisoSeleccionado.value == null ||
         lugarSeleccionado.value == null ||
         horarioInicio.value == null ||
         horarioSalida.value == null ||
         autoSeleccionado.value == null) {
-      return false;
+      Get.snackbar(
+        "Campos incompletos",
+        "Por favor completá todos los datos para confirmar.",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.shade100,
+        colorText: Colors.black,
+      );
+      return;
     }
 
     final duracionEnHoras =
         horarioSalida.value!.difference(horarioInicio.value!).inMinutes / 60;
 
-    if (duracionEnHoras <= 0) return false;
+    if (duracionEnHoras <= 0) {
+      Get.snackbar(
+        "Duración inválida",
+        "La hora de salida debe ser posterior a la de inicio.",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.orange.shade100,
+        colorText: Colors.black,
+      );
+      return;
+    }
 
     final montoCalculado = (duracionEnHoras * 10000).roundToDouble();
 
@@ -102,10 +122,25 @@ class AlumnoController extends GetxController {
         await db.saveAll("lugares.json", lugares);
       }
 
-      return true;
+      Get.snackbar(
+        "Reserva confirmada",
+        "Tu reserva ha sido registrada con éxito.",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green.shade100,
+        colorText: Colors.black,
+      );
+
+      resetearCampos();
+      await cargarPisosYLugares();
     } catch (e) {
+      Get.snackbar(
+        "Error",
+        "No se pudo guardar la reserva.",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.shade100,
+        colorText: Colors.black,
+      );
       print("Error al guardar reserva: $e");
-      return false;
     }
   }
 

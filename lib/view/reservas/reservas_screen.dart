@@ -32,12 +32,12 @@ class ReservaScreen extends StatelessWidget {
                   onChanged: (p) => controller.seleccionarPiso(p!),
                 ),
                 const SizedBox(height: 12),
-                _buildLugaresGrid(),
+                _buildLugaresGrid(controller),
                 const SizedBox(height: 12),
-                _buildHorarioSelector(context),
-                _buildDuracionChips(),
+                _buildHorarioSelector(context, controller),
+                _buildDuracionChips(controller),
                 const SizedBox(height: 12),
-                _buildMontoEstimado(),
+                _buildMontoEstimado(controller),
                 const Spacer(),
                 SizedBox(
                   width: double.infinity,
@@ -79,8 +79,7 @@ class ReservaScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLugaresGrid() {
-    final controller = Get.find<AlumnoController>();
+  Widget _buildLugaresGrid(AlumnoController controller) {
     final piso = controller.pisoSeleccionado.value;
     final lugares = controller.lugaresDisponibles
         .where((l) => l.codigoPiso == piso?.codigo)
@@ -118,60 +117,58 @@ class ReservaScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHorarioSelector(BuildContext context) {
-    final controller = Get.find<AlumnoController>();
-
+  Widget _buildHorarioSelector(BuildContext context, AlumnoController controller) {
     return Row(
       children: [
-        Expanded(child: _buildTimeButton(context, true)),
+        Expanded(child: _buildTimeButton(context, true, controller)),
         const SizedBox(width: 8),
-        Expanded(child: _buildTimeButton(context, false)),
+        Expanded(child: _buildTimeButton(context, false, controller)),
       ],
     );
   }
 
-  Widget _buildTimeButton(BuildContext context, bool isInicio) {
-    final controller = Get.find<AlumnoController>();
-    final date = isInicio
-        ? controller.horarioInicio.value
-        : controller.horarioSalida.value;
+  Widget _buildTimeButton(BuildContext context, bool isInicio, AlumnoController controller) {
+    return Obx(() {
+      final date = isInicio
+          ? controller.horarioInicio.value
+          : controller.horarioSalida.value;
 
-    return ElevatedButton.icon(
-      onPressed: () async {
-        final pickedDate = await showDatePicker(
-          context: context,
-          initialDate: DateTime.now(),
-          firstDate: DateTime.now(),
-          lastDate: DateTime.now().add(const Duration(days: 30)),
-        );
-        if (pickedDate == null) return;
+      return ElevatedButton.icon(
+        onPressed: () async {
+          final pickedDate = await showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime.now(),
+            lastDate: DateTime.now().add(const Duration(days: 30)),
+          );
+          if (pickedDate == null) return;
 
-        final pickedTime = await showTimePicker(
-          context: context,
-          initialTime: TimeOfDay.now(),
-        );
-        if (pickedTime == null) return;
+          final pickedTime = await showTimePicker(
+            context: context,
+            initialTime: TimeOfDay.now(),
+          );
+          if (pickedTime == null) return;
 
-        final fullDate = DateTime(pickedDate.year, pickedDate.month,
-            pickedDate.day, pickedTime.hour, pickedTime.minute);
+          final fullDate = DateTime(pickedDate.year, pickedDate.month,
+              pickedDate.day, pickedTime.hour, pickedTime.minute);
 
-        if (isInicio) {
-          controller.horarioInicio.value = fullDate;
-        } else {
-          controller.horarioSalida.value = fullDate;
-        }
-      },
-      icon: Icon(isInicio ? Icons.access_time : Icons.timer_off),
-      label: Obx(() => Text(
-            date == null
-                ? (isInicio ? "Inicio" : "Salida")
-                : "${UtilesApp.formatearFechaDdMMAaaa(date)} ${TimeOfDay.fromDateTime(date).format(context)}",
-          )),
-    );
+          if (isInicio) {
+            controller.horarioInicio.value = fullDate;
+          } else {
+            controller.horarioSalida.value = fullDate;
+          }
+        },
+        icon: Icon(isInicio ? Icons.access_time : Icons.timer_off),
+        label: Text(
+          date == null
+              ? (isInicio ? "Inicio" : "Salida")
+              : "${UtilesApp.formatearFechaDdMMAaaa(date)} ${TimeOfDay.fromDateTime(date).format(context)}",
+        ),
+      );
+    });
   }
 
-  Widget _buildDuracionChips() {
-    final controller = Get.find<AlumnoController>();
+  Widget _buildDuracionChips(AlumnoController controller) {
     return Wrap(
       spacing: 6,
       children: [1, 2, 4, 6].map((h) {
@@ -179,9 +176,11 @@ class ReservaScreen extends StatelessWidget {
               label: Text("$h h"),
               selected: controller.duracionSeleccionada.value == h,
               onSelected: (_) {
-                final inicio = controller.horarioInicio.value ?? DateTime.now();
+                final inicio =
+                    controller.horarioInicio.value ?? DateTime.now();
                 controller.horarioInicio.value = inicio;
-                controller.horarioSalida.value = inicio.add(Duration(hours: h));
+                controller.horarioSalida.value =
+                    inicio.add(Duration(hours: h));
                 controller.duracionSeleccionada.value = h;
               },
             ));
@@ -189,15 +188,15 @@ class ReservaScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMontoEstimado() {
-    final controller = Get.find<AlumnoController>();
+  Widget _buildMontoEstimado(AlumnoController controller) {
     return Obx(() {
       final inicio = controller.horarioInicio.value;
       final salida = controller.horarioSalida.value;
 
       if (inicio == null || salida == null) return const SizedBox();
 
-      final monto = ((salida.difference(inicio).inMinutes / 60) * 10000).round();
+      final monto =
+          ((salida.difference(inicio).inMinutes / 60) * 10000).round();
       return Padding(
         padding: const EdgeInsets.only(top: 8),
         child: Text(
