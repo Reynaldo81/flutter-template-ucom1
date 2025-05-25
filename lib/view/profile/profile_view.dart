@@ -144,7 +144,7 @@ class ProfileView extends StatelessWidget {
                                 duration: const Duration(milliseconds: 500));
                           },
                           child: Text(
-                            "Edit Profile",
+                            "Editar Perfil",
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium!
