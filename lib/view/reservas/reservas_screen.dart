@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:finpay/controller/Alumno_controller.dart';
+import 'package:finpay/controller/Alumn/Alumno_controller.dart';
 import 'package:finpay/model/sitema_reservas.dart';
 import 'package:finpay/utils/utiles.dart';
 
@@ -80,7 +80,7 @@ class ReservaScreen extends StatelessWidget {
   }
 
   Widget _buildLugaresGrid() {
-    final controller = Get.find<ReservaController>();
+    final controller = Get.find<AlumnoController>();
     final piso = controller.pisoSeleccionado.value;
     final lugares = controller.lugaresDisponibles
         .where((l) => l.codigoPiso == piso?.codigo)
@@ -119,7 +119,7 @@ class ReservaScreen extends StatelessWidget {
   }
 
   Widget _buildHorarioSelector(BuildContext context) {
-    final controller = Get.find<ReservaController>();
+    final controller = Get.find<AlumnoController>();
 
     return Row(
       children: [
@@ -131,7 +131,7 @@ class ReservaScreen extends StatelessWidget {
   }
 
   Widget _buildTimeButton(BuildContext context, bool isInicio) {
-    final controller = Get.find<ReservaController>();
+    final controller = Get.find<AlumnoController>();
     final date = isInicio
         ? controller.horarioInicio.value
         : controller.horarioSalida.value;
@@ -171,7 +171,7 @@ class ReservaScreen extends StatelessWidget {
   }
 
   Widget _buildDuracionChips() {
-    final controller = Get.find<ReservaController>();
+    final controller = Get.find<AlumnoController>();
     return Wrap(
       spacing: 6,
       children: [1, 2, 4, 6].map((h) {
@@ -190,7 +190,7 @@ class ReservaScreen extends StatelessWidget {
   }
 
   Widget _buildMontoEstimado() {
-    final controller = Get.find<ReservaController>();
+    final controller = Get.find<AlumnoController>();
     return Obx(() {
       final inicio = controller.horarioInicio.value;
       final salida = controller.horarioSalida.value;
