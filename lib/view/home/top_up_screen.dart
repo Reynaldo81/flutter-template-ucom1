@@ -47,7 +47,7 @@ class _TopUpSCreenState extends State<TopUpSCreen> {
                     ),
                     const Expanded(child: SizedBox()),
                     Text(
-                      "Top Up",
+                      "Completar",
                       style: Theme.of(context).textTheme.titleLarge!.copyWith(
                             color: Colors.white,
                             fontSize: 20,
@@ -100,7 +100,7 @@ class _TopUpSCreenState extends State<TopUpSCreen> {
                             ),
                             const SizedBox(height: 16),
                             Text(
-                              "Finpay Card",
+                              "Tarjeta finpay",
                               style: Theme.of(context)
                                   .textTheme
                                   .titleLarge!
@@ -158,7 +158,7 @@ class _TopUpSCreenState extends State<TopUpSCreen> {
                                       ),
                                       const SizedBox(width: 15),
                                       Text(
-                                        "Debit",
+                                        "Debito",
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodySmall!
@@ -248,7 +248,7 @@ class _TopUpSCreenState extends State<TopUpSCreen> {
                       ),
                       const Expanded(child: SizedBox()),
                       Text(
-                        "Swipe to top-up",
+                        "Desliza para recargar",
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
