@@ -9,266 +9,48 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:swipe/swipe.dart';
 
-class TopUpSCreen extends StatefulWidget {
-  const TopUpSCreen({Key? key}) : super(key: key);
+class TopUpScreen extends StatefulWidget {
+  const TopUpScreen({Key? key}) : super(key: key);
 
   @override
-  State<TopUpSCreen> createState() => _TopUpSCreenState();
+  State<TopUpScreen> createState() => _TopUpScreenState();
 }
 
-class _TopUpSCreenState extends State<TopUpSCreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.isLightTheme == false
-          ? HexColor('#15141f')
-          : HexColor(AppTheme.primaryColorString!),
-      body: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20, top: 50),
-                child: Row(
-                  children: [
-                    InkWell(
-                      focusColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      hoverColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Icon(
-                        Icons.arrow_back,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const Expanded(child: SizedBox()),
-                    Text(
-                      "Completar",
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w800,
-                          ),
-                    ),
-                    const Expanded(child: SizedBox()),
-                    const Icon(
-                      Icons.arrow_back,
-                      color: Colors.transparent,
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 30),
-                child: Container(
-                  height: Get.height - 107,
-                  width: Get.width,
-                  decoration: BoxDecoration(
-                    color: AppTheme.isLightTheme == false
-                        ? const Color(0xff211F32)
-                        : Theme.of(context).appBarTheme.backgroundColor,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(24),
-                      topRight: Radius.circular(24),
-                    ),
-                  ),
-                  child: ListView(
-                    physics: const ClampingScrollPhysics(),
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 50),
-                        child: Column(
-                          children: [
-                            const SizedBox(height: 30),
-                            Container(
-                              height: 80,
-                              width: 80,
-                              decoration: BoxDecoration(
-                                color: const Color(0xffF5F7FE),
-                                borderRadius: BorderRadius.circular(24),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(18.0),
-                                child: SvgPicture.asset(
-                                  DefaultImages.unicorn,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              "Tarjeta finpay",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge!
-                                  .copyWith(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              "••••   ••••   ••••   5318",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: const Color(0xffA2A0A8),
-                                  ),
-                            ),
-                            const SizedBox(height: 40),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 20, right: 20),
-                              child: amountContainer(context, "500"),
-                            ),
-                            const SizedBox(height: 24),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 20, right: 20),
-                              child: Container(
-                                height: 64,
-                                width: Get.width,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(24),
-                                  color: AppTheme.isLightTheme == false
-                                      ? const Color(0xff323045)
-                                      : Colors.transparent,
-                                  border: Border.all(
-                                    color:
-                                        HexColor(AppTheme.primaryColorString!)
-                                            .withOpacity(0.05),
-                                    width: 2,
-                                  ),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 16, right: 16),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      SvgPicture.asset(
-                                        DefaultImages.mastercard,
-                                      ),
-                                      const SizedBox(width: 15),
-                                      Text(
-                                        "Debito",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall!
-                                            .copyWith(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                      ),
-                                      const Expanded(child: SizedBox()),
-                                      Text(
-                                        "\$7,124",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge!
-                                            .copyWith(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w800,
-                                            ),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      const Icon(
-                                        Icons.keyboard_arrow_down_outlined,
-                                        color: Color(0xffA2A0A8),
-                                        size: 30,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 50),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).padding.bottom,
-            ),
-            child: Swipe(
-              onSwipeRight: () {
-                Get.bottomSheet(
-                  topupDialog(context),
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    left: 20, right: 20, top: 20, bottom: 20),
-                child: Container(
-                  height: 56,
-                  width: Get.width,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: AppTheme.isLightTheme == false
-                        ? HexColor(AppTheme.primaryColorString!)
-                        : HexColor(AppTheme.primaryColorString!)
-                            .withOpacity(0.05),
-                  ),
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Container(
-                          height: 48,
-                          width: 48,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: AppTheme.isLightTheme == false
-                                ? Colors.white
-                                : HexColor(AppTheme.primaryColorString!),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: SvgPicture.asset(
-                              DefaultImages.swipe,
-                              color: AppTheme.isLightTheme == false
-                                  ? HexColor(AppTheme.primaryColorString!)
-                                  : Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const Expanded(child: SizedBox()),
-                      Text(
-                        "Desliza para recargar",
-                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                            ),
-                      ),
-                      const Expanded(child: SizedBox()),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class ReservationsScreen extends StatelessWidget {
-  const ReservationsScreen({Key? key}) : super(key: key);
+class _TopUpScreenState extends State<TopUpScreen> {
+  final List<Map<String, dynamic>> reservations = [
+    {
+      "title": "Reserva #12345",
+      "date": "3 de junio de 2025",
+      "amount": "\$150.00",
+      "status": "PAGADA",
+      "statusColor": Colors.green,
+      "icon": Icons.check_circle,
+    },
+    {
+      "title": "Reserva #12346",
+      "date": "4 de junio de 2025",
+      "amount": "\$200.00",
+      "status": "PENDIENTE",
+      "statusColor": Colors.orange,
+      "icon": Icons.access_time,
+    },
+    {
+      "title": "Reserva #12347",
+      "date": "5 de junio de 2025",
+      "amount": "\$300.00",
+      "status": "PAGADA",
+      "statusColor": Colors.green,
+      "icon": Icons.check_circle,
+    },
+    {
+      "title": "Reserva #12348",
+      "date": "6 de junio de 2025",
+      "amount": "\$100.00",
+      "status": "PENDIENTE",
+      "statusColor": Colors.orange,
+      "icon": Icons.access_time,
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -279,44 +61,22 @@ class ReservationsScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: const [
-            ReservationCard(
-              title: "Reserva #12345",
-              date: "3 de junio de 2025",
-              amount: "\$150.00",
-              status: "PAGADA",
-              statusColor: Colors.green,
-              icon: Icons.check_circle,
-            ),
-            SizedBox(height: 16),
-            ReservationCard(
-              title: "Reserva #12346",
-              date: "4 de junio de 2025",
-              amount: "\$200.00",
-              status: "PENDIENTE",
-              statusColor: Colors.orange,
-              icon: Icons.access_time,
-            ),
-            SizedBox(height: 16),
-            ReservationCard(
-              title: "Reserva #12347",
-              date: "5 de junio de 2025",
-              amount: "\$300.00",
-              status: "PAGADA",
-              statusColor: Colors.green,
-              icon: Icons.check_circle,
-            ),
-            SizedBox(height: 16),
-            ReservationCard(
-              title: "Reserva #12348",
-              date: "6 de junio de 2025",
-              amount: "\$100.00",
-              status: "PENDIENTE",
-              statusColor: Colors.orange,
-              icon: Icons.access_time,
-            ),
-          ],
+        child: ListView.builder(
+          itemCount: reservations.length,
+          itemBuilder: (context, index) {
+            final reservation = reservations[index];
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: ReservationCard(
+                title: reservation["title"],
+                date: reservation["date"],
+                amount: reservation["amount"],
+                status: reservation["status"],
+                statusColor: reservation["statusColor"],
+                icon: reservation["icon"],
+              ),
+            );
+          },
         ),
       ),
     );
