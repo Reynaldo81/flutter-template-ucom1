@@ -1,13 +1,6 @@
-// ignore_for_file: deprecated_member_use
-
-import 'package:finpay/config/images.dart';
-import 'package:finpay/config/textstyle.dart';
-import 'package:finpay/view/home/topup_dialog.dart';
-import 'package:finpay/view/home/widget/amount_container.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
-import 'package:swipe/swipe.dart';
+import 'package:flutter/services.dart';
 
 class TopUpScreen extends StatefulWidget {
   const TopUpScreen({Key? key}) : super(key: key);
@@ -17,45 +10,54 @@ class TopUpScreen extends StatefulWidget {
 }
 
 class _TopUpScreenState extends State<TopUpScreen> {
-  List<Map<String, dynamic>> reservations = [
-    {
-      "title": "Reserva #12345",
-      "date": "3 de junio de 2025",
-      "amount": "\$150.00",
-      "status": "PENDIENTE",
-      "statusColor": Colors.orange,
-      "icon": Icons.access_time,
-    },
-    {
-      "title": "Reserva #12346",
-      "date": "4 de junio de 2025",
-      "amount": "\$200.00",
-      "status": "PENDIENTE",
-      "statusColor": Colors.orange,
-      "icon": Icons.access_time,
-    },
-    {
-      "title": "Reserva #12347",
-      "date": "5 de junio de 2025",
-      "amount": "\$300.00",
-      "status": "PAGADA",
-      "statusColor": Colors.green,
-      "icon": Icons.check_circle,
-    },
-  ];
+  List<Map<String, dynamic>> reservations = [];
 
-  void registerPayment(int index) {
+  @override
+  void initState() {
+    super.initState();
+    loadReservations();
+  }
+
+  Future<void> loadReservations() async {
+    final String response = await rootBundle.loadString('assets/data/reservas.json');
+    final List<dynamic> data = json.decode(response);
+    setState(() {
+      reservations = data.map((e) => Map<String, dynamic>.from(e)).toList();
+    });
+  }
+
+  Future<void> registerPayment(int index) async {
+    final reservation = reservations[index];
+    final payment = {
+      "codigoPago": "PAG${DateTime.now().millisecondsSinceEpoch}",
+      "codigoReservaAsociada": reservation["codigoReserva"],
+      "montoPagado": reservation["amount"],
+      "fechaPago": DateTime.now().toIso8601String(),
+    };
+
+    // Update reservation status
     setState(() {
       reservations[index]["status"] = "PAGADA";
       reservations[index]["statusColor"] = Colors.green;
       reservations[index]["icon"] = Icons.check_circle;
     });
+
+    // Save payment to pagos.json
+    final String pagosResponse = await rootBundle.loadString('assets/data/pagos.json');
+    final List<dynamic> pagosData = json.decode(pagosResponse);
+    pagosData.add(payment);
+
+    // Simulate saving to file (replace with actual file saving logic)
+    print(json.encode(pagosData));
   }
 
-  void cancelReservation(int index) {
+  Future<void> cancelReservation(int index) async {
     setState(() {
       reservations.removeAt(index);
     });
+
+    // Simulate saving updated reservations to reservas.json (replace with actual file saving logic)
+    print(json.encode(reservations));
   }
 
   @override
