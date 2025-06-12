@@ -1,5 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:convert';
+import 'dart:io';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:finpay/config/images.dart';
 import 'package:finpay/config/textstyle.dart';
@@ -15,11 +17,54 @@ import 'package:finpay/view/reservas/reservas_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 
 class HomeView extends StatelessWidget {
   final HomeController homeController;
 
   const HomeView({Key? key, required this.homeController}) : super(key: key);
+
+  Future<int> obtenerPagosRealizadosMesActual() async {
+    final pagosPath = await _getFilePath('pagos.json');
+    final pagosData = await _readJsonFile(pagosPath);
+
+    final ahora = DateTime.now();
+    final mesActual = ahora.month;
+    final anioActual = ahora.year;
+
+    return pagosData.where((pago) {
+      final fechaPago = DateTime.parse(pago["fechaPago"]);
+      return fechaPago.month == mesActual && fechaPago.year == anioActual;
+    }).length;
+  }
+
+  Future<int> obtenerPagosPendientes() async {
+    final pagosPath = await _getFilePath('pagos.json');
+    final pagosData = await _readJsonFile(pagosPath);
+
+    return pagosData.where((pago) => pago["status"] == "PENDIENTE").length;
+  }
+
+  Future<int> obtenerCantidadAutos() async {
+    final autosPath = await _getFilePath('autos.json');
+    final autosData = await _readJsonFile(autosPath);
+
+    return autosData.length;
+  }
+
+  Future<String> _getFilePath(String fileName) async {
+    final directory = await getApplicationDocumentsDirectory();
+    return '${directory.path}/$fileName';
+  }
+
+  Future<List<dynamic>> _readJsonFile(String filePath) async {
+    final file = File(filePath);
+    if (!file.existsSync()) {
+      return [];
+    }
+    final content = await file.readAsString();
+    return json.decode(content);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +92,7 @@ class HomeView extends StatelessWidget {
                           ),
                     ),
                     Text(
-                      "Good morning",
+                      "Resumen del mes",
                       style: Theme.of(context).textTheme.titleLarge!.copyWith(
                             fontWeight: FontWeight.w700,
                             fontSize: 24,
@@ -97,6 +142,56 @@ class HomeView extends StatelessWidget {
               ],
             ),
           ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: FutureBuilder(
+              future: Future.wait([
+                obtenerPagosRealizadosMesActual(),
+                obtenerPagosPendientes(),
+                obtenerCantidadAutos(),
+              ]),
+              builder: (context, AsyncSnapshot<List<int>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (snapshot.hasError) {
+                  return const Center(child: Text("Error al cargar datos"));
+                }
+
+                final pagosRealizados = snapshot.data![0];
+                final pagosPendientes = snapshot.data![1];
+                final cantidadAutos = snapshot.data![2];
+
+                return Column(
+                  children: [
+                    _buildResumenCard(
+                      title: "Pagos realizados este mes",
+                      value: pagosRealizados.toString(),
+                      icon: Icons.check_circle,
+                      color: Colors.green,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildResumenCard(
+                      title: "Pagos pendientes",
+                      value: pagosPendientes.toString(),
+                      icon: Icons.access_time,
+                      color: Colors.orange,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildResumenCard(
+                      title: "Cantidad de autos registrados",
+                      value: cantidadAutos.toString(),
+                      icon: Icons.directions_car,
+                      color: Colors.blue,
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 20),
           Expanded(
             child: ListView(
               physics: const ClampingScrollPhysics(),
@@ -312,8 +407,61 @@ class HomeView extends StatelessWidget {
                 )
               ],
             ),
-          )
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildResumenCard({
+    required String title,
+    required String value,
+    required IconData icon,
+    required Color color,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            blurRadius: 6,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            Icon(icon, color: color, size: 40),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    value,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: color,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
